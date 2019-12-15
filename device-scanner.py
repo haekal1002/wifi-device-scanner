@@ -1,13 +1,26 @@
-import subprocess 
+import subprocess
+import threading
 
-command = 'nmap -sP 192.168.1.0/24'
-data = subprocess.check_output(command.split()).split('\n')
+def net_scan(i):
+    try:
+        ip = '192.168.1.'
+        command = 'ping -c 1 '+ip+str(i)
+        data = subprocess.check_output(command.split()).decode().split('\n')
+        
+        for line in data:
+            #print(line)
+            if '0% packet loss' in line: 
+                print('[+] {} is active'.format(ip+str(i)))
+    
+    except Exception as error:
+        #print(error)
+        #print('[-] Trouble with {}'.format(ip+str(i)))
+        pass
 
-# 2-dimensional lists contaning host:ip
-profiles = [a.split('for')[1][1:-1].split() for a in data if 'Nmap scan report' in a]
+for i in range(1, 255):
+    try:
+        t = threading.Thread(target=net_scan, args=(i, ))
+        t.start()
+    except Exception as error:
+        print('[-] {}'.format(error))
 
-# a list containing MAC Addresses
-#mac_address = [b.split()[2] for b in data if 'MAC Address' in b]
-
-for host, ip in profiles:
-    print('[+] Host: {0:<25} IP: {1}'.format(host, ip[1:]))
