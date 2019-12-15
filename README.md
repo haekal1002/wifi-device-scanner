@@ -1,2 +1,2 @@
 # wifi-device-scanner
-A python script that scan the network to see devices connected to wi-fi
+A python script that scan the network to see devices connected to wi-fi (only works on linux tho)
